@@ -1,0 +1,21 @@
+{
+  "name": "Weekly Logs",
+  "details":"A Powerup to highlight the stand-up cards for a given week",
+  "icon": {
+    "url": "https://cdn.glitch.com/1b42d7fe-bda8-4af8-a6c8-eff0cea9e08a%2Fstartup.png?1494946700268"
+  },
+  "author": "Robin",
+  "capabilities": [
+    "callback",
+    "card-badges",
+    "card-detail-badges",
+    "show-settings",
+    "board-buttons",
+    "card-buttons"
+  ],
+  "connectors": {
+    "iframe": {
+      "url": "./index.html"
+    }
+  }
+}
