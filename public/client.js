@@ -49,6 +49,7 @@ var onClick = function(t, opts) {
     .then(function(result) {
       hidden = result
       console.log('hidden value inverted, now = ' + hidden)
+ 
   }), function(reason) {
     console.log(reason)
   })
@@ -87,27 +88,16 @@ var init = TrelloPowerUp.initialize({
       }
    })
     
-    return[{
-      dynamic: function() {
-        hidden = null
-        t.get('board', 'shared', 'card-hidden')
-        .then(function(result) {
-          hidden = result
-        })
-        .then(function() {
-          if (hidden == false) {
-            return new Promise(function (resolve, reject) {
-              var text = '🙈 Hide Inactive Cards',
-              callback = onClick
-            })
-          } else {
-            return new Promise(function (resolve, reject) {
-              var text = '🙊 Show Inactive Cards',
-              callback = onClick
-            })
-          }
-        })
-      },
-    }]
+    if (hidden == false) {
+      return [{
+        text: '🙈 Hide Inactive Cards',
+        callback: onClick
+      }];
+    } else {
+      return [{  
+        text: '🙊 Show Inactive Cards',
+        callback: onClick
+      }];      
+    }
   },
 });
