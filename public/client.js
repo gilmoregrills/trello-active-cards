@@ -1,7 +1,7 @@
 /* global TrelloPowerUp */
 var Promise = TrelloPowerUp.Promise;
 
-var HIDDEN = false
+/* Multi-use Functions */
 
 var activeLabel = function(t, options) {
   // Adds a CURRENT WEEK label in bright 
@@ -9,6 +9,8 @@ var activeLabel = function(t, options) {
   // old.
   // Otherwise, adds an OLD NEWS label in
   // grey/white.
+  // TODO: Update it to only highlight cards 
+  // from current Monday-Friday stretch
   var date = new Date(Date.now())
   var card = t.card('all')
   
@@ -32,25 +34,70 @@ var activeLabel = function(t, options) {
   });
 }
 
-TrelloPowerUp.initialize({
-  //Start adding handlers for your capabilities here!
+var onClick = function(t, opts) {
+  // Should invert the HIDDEN var and
+  // then re-call the board-buttons function 
+  // to update the text and show/hide the cards
+  var hidden = null
+  t.get('board', 'shared', 'card-hidden')
+  .then(function(result) {
+    hidden = result
+    console.log('button clicked, hidden = ' + hidden)
+  })
+  t.set('board', 'shared', 'card-vis', !hidden)
+  .then(t.get('board', 'shared', 'card-vis')
+    .then(function(result) {
+      hidden = result
+      console.log('hidden value inverted, now = ' + hidden)
+ 
+  }), function(reason) {
+    console.log(reason)
+  })
+}
+
+var updateLabels = function(t, opts) {
+  var hidden = null
+  t.get('board', 'shared', 'card-hidden')
+  .then(function(result) {
+    hidden = result
+  })
+  
+ 
+}
+
+var init = TrelloPowerUp.initialize({
+  // Start adding handlers for your capabilities here!
+  // Initialise just takes a dict of key/value 
+  // capability/function pairs! 
   
   'card-badges': activeLabel,
                          
   'card-detail-badges': activeLabel,
   
   'board-buttons': function(t, options) {
-    if (HIDDEN == false) {
+    var hidden = null
+    
+  
+    t.get('board', 'shared', 'card-hidden')
+    .then(function(result) {
+      if (hidden != undefined) {
+        hidden = result
+      } else {
+        t.set('board', 'shared', 'card-hidden', false)
+        hidden = false
+      }
+   })
+    
+    if (hidden == false) {
       return [{
-        text: '🙈 Hide Inactive Cards'
-        
+        text: '🙈 Hide Inactive Cards',
+        callback: onClick
       }];
     } else {
       return [{  
-        text: '🙊 Show Inactive Cards'
+        text: '🙊 Show Inactive Cards',
+        callback: onClick
       }];      
     }
   },
-  
-  
 });
