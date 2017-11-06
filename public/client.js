@@ -9,10 +9,10 @@ var activeLabel = function(t, options) {
   // old.
   // Otherwise, adds an OLD NEWS label in
   // grey/white.
-  // TODO: Update it to only highlight cards 
-  // from current Monday-Friday stretch
+
   var date = new Date(Date.now())
   var card = t.card('all')
+  var timeSinceMonday = date.getDay() * 86400
   
   return card
   .then(function (card) {
@@ -20,7 +20,7 @@ var activeLabel = function(t, options) {
     // console.log(cardCreated);
     // console.log((date - cardCreated) / 1000);
     // console.log(card.name);
-    if (((date - cardCreated) / 1000) < 518400) {
+    if (((date - cardCreated) / 1000) < timeSinceMonday) {
         return [{
           text: '👌 CURRENT WEEK 👍',
           color: 'sky'
@@ -34,10 +34,10 @@ var activeLabel = function(t, options) {
   });
 }
 
+// WIP, currently not working
 var onClick = function(t, opts) {
   // Should invert the HIDDEN var and
-  // then re-call the board-buttons function 
-  // to update the text and show/hide the cards
+  // then re-render the board stuff
   var hidden = null
   t.get('board', 'shared', 'card-hidden')
   .then(function(result) {
@@ -55,15 +55,6 @@ var onClick = function(t, opts) {
   })
 }
 
-var updateLabels = function(t, opts) {
-  var hidden = null
-  t.get('board', 'shared', 'card-hidden')
-  .then(function(result) {
-    hidden = result
-  })
-  
- 
-}
 
 var init = TrelloPowerUp.initialize({
   // Start adding handlers for your capabilities here!
@@ -76,8 +67,7 @@ var init = TrelloPowerUp.initialize({
   
   'board-buttons': function(t, options) {
     var hidden = null
-    
-  
+
     t.get('board', 'shared', 'card-hidden')
     .then(function(result) {
       if (hidden != undefined) {
